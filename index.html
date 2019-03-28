@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script src="https://static.robotwebtools.org/EaselJS/current/easeljs.js"></script>
+<script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
+<script src="./ros2d.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<link rel="stylesheet" type="text/css" href="index.css">
+<script>
+
+  function init(){
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'//Conexion a rosbridge
+    });
+
+    ros.on('connection', function() {
+        console.log('conectado');
+    });
+
+    var robotMarker = new ROS2D.NavigationArrow({
+          size : 12,
+          strokeSize : 1,
+          fillColor : createjs.Graphics.getRGB(255, 128, 0, 0.66),
+          pulse : true
+    });
+    robotMarker.visible = false;
+
+    /*var initialposeTopic = new ROSLIB.Topic({
+        ros: ros,
+        name: '/initialpose',
+        messageType:' geometry_msgs/PoseWithCovarianceStamped'
+    });*/
+
+    var poseTopic = new ROSLIB.Topic({
+        ros         : ros,
+        name        : '/amcl_pose',//Topico
+        messageType : 'geometry_msgs/PoseWithCovarianceStamped' //tipo del mensaje
+    });
+
+    var goalTopic = new ROSLIB.Topic({
+        ros: ros,
+        name: '/move_base_simple/goal',
+        messageType: 'geometry_msgs/PoseStamped'
+    })
+    /*var pathTopic = new ROSLIB.Topic({
+        ros         : ros,
+        name        : '/move_base/NavfnROS/plan',//Topico
+        messageType : 'nav_msgs/Path' //tipo del mensaje
+    });*/
+
+    // The ROS2D.Viewer is a 2D scene manager with additional ROS
+    // functionality.
+    var viewer2D = new ROS2D.Viewer({
+       divID : 'twod-map',
+       width : 500,
+       height : 500
+    });
+
+    // Subscribes to the robot's OccupancyGrid, which is ROS representation of
+    // the map, and renders the map in the scene.
+    var gridClient = new ROS2D.OccupancyGridClient({
+      ros : ros,
+      rootObject : viewer2D.scene
+    });
+
+    gridClient.on('change', function() {
+      viewer2D.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
+      viewer2D.shift(gridClient.currentGrid.pose.position.x, gridClient.currentGrid.pose.position.y);
+      console.log(viewer2D.scene.children);
+      viewer2D.scene.children[0].image.getContext('2d').drawImage(viewer2D.scene.children[0].image, 0, 0, 1000, 1000);
+    });
+
+    var initScaleSet = false;
+    gridClient.rootObject.addChild(robotMarker);
+    poseTopic.subscribe(function(message) {
+      //console.log(message.pose.pose.position.x, message.pose.pose.position.y);
+      // Orientate the marker based on the robot's pose.
+      robotMarker.x = message.pose.pose.position.x;
+      robotMarker.y = -message.pose.pose.position.y;
+      if (!initScaleSet) {
+        robotMarker.scaleX = 1.0 / viewer2D.scene.scaleX;
+        robotMarker.scaleY = 1.0 / viewer2D.scene.scaleY;
+        initScaleSet = true;
+      }
+      robotMarker.rotation = viewer2D.scene.rosQuaternionToGlobalTheta(message.pose.pose.orientation);
+      robotMarker.visible = true;
+    });
+
+    var polygon = new ROS2D.PolygonMarker();
+    viewer2D.scene.addChild(polygon);
+
+    /*pathTopic.subscribe(function(message) {
+      for (var i = 0; i < message.poses.length; i++) {
+        var pos = viewer2D.scene.globalToRos(message.poses[i].pose.position.x, message.poses[i].pose.position.y);
+				polygon.addPoint(pos);
+      }
+    })*/
+
+    viewer2D.scene.addEventListener('stagemouseup', function(event) {
+      if (viewer2D.scene.mouseInBounds === true) {
+				var pos = viewer2D.scene.globalToRos(event.stageX, event.stageY);
+        var goal = new ROSLIB.Message({
+          header:
+          {
+            frame_id: "map"
+          },
+          pose:
+          {
+            position: {x: pos.x, y: pos.y, z: 0.0},
+            orientation: {w: 1.0}
+          }
+        });
+        goalTopic.publish(goal);
+      }
+    });
+
+    $( "#twod-map" ).on("wheel", function(event) {
+      if (viewer2D.scene.mouseInBounds === true) {
+        console.log(event.originalEvent);
+      }
+    });
+  }
+</script>
+</head>
+
+<body onload="init()">
+  <h1>Simple Map Example</h1>
+  <div class="col-span-12">
+    <h3>2D Map</h3>
+    <div id="twod-map"></div>
+  </div>
+</body>
+</html>

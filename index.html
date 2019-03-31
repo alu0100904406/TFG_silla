@@ -23,7 +23,7 @@
     var robotMarker = new ROS2D.NavigationArrow({
           size : 12,
           strokeSize : 1,
-          fillColor : createjs.Graphics.getRGB(255, 128, 0, 0.66),
+          fillColor : createjs.Graphics.getRGB(255, 128, 0, 1),
           pulse : true
     });
     robotMarker.visible = false;
@@ -45,11 +45,11 @@
         name: '/move_base_simple/goal',
         messageType: 'geometry_msgs/PoseStamped'
     })
-    /*var pathTopic = new ROSLIB.Topic({
+    var pathTopic = new ROSLIB.Topic({
         ros         : ros,
         name        : '/move_base/NavfnROS/plan',//Topico
         messageType : 'nav_msgs/Path' //tipo del mensaje
-    });*/
+    });
 
     // The ROS2D.Viewer is a 2D scene manager with additional ROS
     // functionality.
@@ -69,10 +69,14 @@
     gridClient.on('change', function() {
       viewer2D.scaleToDimensions(gridClient.currentGrid.width, gridClient.currentGrid.height);
       viewer2D.shift(gridClient.currentGrid.pose.position.x, gridClient.currentGrid.pose.position.y);
-      console.log(viewer2D.scene.children);
-      viewer2D.scene.children[0].image.getContext('2d').drawImage(viewer2D.scene.children[0].image, 0, 0, 1000, 1000);
+      //$(".lds-dual-ring").remove()
+      $("canvas").css("visibility", "visible");
+      //console.log(viewer2D.scene.children);
+      //viewer2D.scene.children[0].image.getContext('2d').drawImage(viewer2D.scene.children[0].image, 0, 0, 1000, 1000);
     });
 
+    var path = new ROS2D.PathShape({ strokeColor: createjs.Graphics.getRGB(239, 48, 14, 0.66)});
+    gridClient.rootObject.addChild(path);
     var initScaleSet = false;
     gridClient.rootObject.addChild(robotMarker);
     poseTopic.subscribe(function(message) {
@@ -89,15 +93,19 @@
       robotMarker.visible = true;
     });
 
-    var polygon = new ROS2D.PolygonMarker();
-    viewer2D.scene.addChild(polygon);
+    /*var polygon = new ROS2D.PolygonMarker();
+    viewer2D.scene.addChild(polygon);*/
 
-    /*pathTopic.subscribe(function(message) {
-      for (var i = 0; i < message.poses.length; i++) {
+    pathTopic.subscribe(function(message) {
+      /*for (var i = 0; i < message.poses.length; i++) {
         var pos = viewer2D.scene.globalToRos(message.poses[i].pose.position.x, message.poses[i].pose.position.y);
 				polygon.addPoint(pos);
-      }
-    })*/
+      }*/
+
+        path.setPath(message);
+        //path.setPath(null);
+
+    })
 
     viewer2D.scene.addEventListener('stagemouseup', function(event) {
       if (viewer2D.scene.mouseInBounds === true) {
@@ -127,9 +135,8 @@
 </head>
 
 <body onload="init()">
-  <h1>Simple Map Example</h1>
+  <h1>Navigation</h1>
   <div class="col-span-12">
-    <h3>2D Map</h3>
     <div id="twod-map"></div>
   </div>
 </body>

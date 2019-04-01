@@ -14,5 +14,5 @@ function tfg_rosbridge(){
 
 function tfg_develop(){
   atom $HOME/Escritorio/TFG
-  opera file:///home/cristian/Escritorio/TFG/index.html
+  opera file:///home/cristian/Escritorio/TFG/index2.html
 }

@@ -97,14 +97,8 @@
     viewer2D.scene.addChild(polygon);*/
 
     pathTopic.subscribe(function(message) {
-      /*for (var i = 0; i < message.poses.length; i++) {
-        var pos = viewer2D.scene.globalToRos(message.poses[i].pose.position.x, message.poses[i].pose.position.y);
-				polygon.addPoint(pos);
-      }*/
-
         path.setPath(message);
         //path.setPath(null);
-
     })
 
     viewer2D.scene.addEventListener('stagemouseup', function(event) {

@@ -1,2 +1,7 @@
 body { background:#eee; margin:1em; text-align:center; }
-canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc; visibility: hidden; }
+h1 { margin-bottom: 60px}
+canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc; visibility: hidden; max-width: 100%}
+.control-input { margin:1em auto; }
+#controller { text-align: left; }
+button { margin-left: 15px;}
+p { margin-left: 15px; margin-top: 1em;}

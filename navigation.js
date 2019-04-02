@@ -1,6 +1,9 @@
 class Navigation {
 
   constructor() {
+
+    this.scale_width = 400;
+    this.scale_heigth = 400;
     this.ros = new ROSLIB.Ros({
       url : 'ws://localhost:9090'//Conexion a rosbridge
     });
@@ -28,10 +31,8 @@ class Navigation {
     this._initialize_topics();
 
     this.path = new ROS2D.PathShape({ strokeColor: createjs.Graphics.getRGB(239, 48, 14, 0.66)});
-    this.pathTopic.subscribe(function(message) {
-        this.path.setPath(message);
-        //path.setPath(null);
-    }.bind(this));
+    this.path_state = false;
+    this.switch_path();
   }
 
   _initialize_topics(){
@@ -52,20 +53,33 @@ class Navigation {
         name        : '/move_base/NavfnROS/plan',//Topico
         messageType : 'nav_msgs/Path' //tipo del mensaje
     });
+
+    this.velTopic = new ROSLIB.Topic({
+        ros         : this.ros,
+        name        : '/cmd_vel',
+        messageType : 'geometry_msgs/Twist'
+    });
+
+    this.stopTopic = new ROSLIB.Topic({
+        ros         : this.ros,
+        name        : '/move_base/cancel',
+        messageType : 'actionlib_msgs/GoalID'
+    });
   }
 
   _set_marker_on_map(){
-    var initScaleSet = false;
+    this.initScaleSet = false;
     this.gridClient.rootObject.addChild(this.robotMarker);
     this.poseTopic.subscribe(function(message) {
+      console.log("pose");
       //console.log(message.pose.pose.position.x, message.pose.pose.position.y);
       // Orientate the marker based on the robot's pose.
       this.robotMarker.x = message.pose.pose.position.x;
       this.robotMarker.y = -message.pose.pose.position.y;
-      if (!initScaleSet) {
+      if (!this.initScaleSet) {
         this.robotMarker.scaleX = 1.0 / this.viewer2D.scene.scaleX;
         this.robotMarker.scaleY = 1.0 / this.viewer2D.scene.scaleY;
-        initScaleSet = true;
+        this.initScaleSet = true;
       }
       this.robotMarker.rotation = this.viewer2D.scene.rosQuaternionToGlobalTheta(message.pose.pose.orientation);
       this.robotMarker.visible = true;
@@ -106,16 +120,50 @@ class Navigation {
 
 
     this.gridClient.on('change', function() {
-      this.viewer2D.scaleToDimensions(this.gridClient.currentGrid.width, this.gridClient.currentGrid.height);
+      this.scale_width = this.gridClient.currentGrid.width;
+      this.scale_heigth = this.gridClient.currentGrid.height;
+      //this.viewer2D.scaleToDimensions(this.gridClient.currentGrid.width, this.gridClient.currentGrid.height);
+      this.zoom(0);
       this.viewer2D.shift(this.gridClient.currentGrid.pose.position.x, this.gridClient.currentGrid.pose.position.y);
       //$(".lds-dual-ring").remove()
       $("canvas").css("visibility", "visible");
       //console.log(viewer2D.scene.children);
       //viewer2D.scene.children[0].image.getContext('2d').drawImage(viewer2D.scene.children[0].image, 0, 0, 1000, 1000);
+      this._set_marker_on_map();
+      this._set_pose_controller();
+      this.gridClient.rootObject.addChild(this.path);
+      //this.gridClient.getMatrix();
     }.bind(this));
+  }
 
-    this._set_marker_on_map();
-    this._set_pose_controller();
-    this.gridClient.rootObject.addChild(this.path);
+  switch_path(){
+    if(!this.path_state){
+      this.path_state=true;
+      this.pathTopic.subscribe(function(message) {
+          this.path.setPath(message);
+      }.bind(this));
+    }
+    else {
+      this.path_state=false;
+      this.path.setPath(null);
+      this.pathTopic.unsubscribe();
+    }
+  }
+
+  zoom(zoom){
+    this.scale_width = this.scale_width+zoom
+    this.scale_heigth = this.scale_heigth+zoom
+    this.viewer2D.scaleToDimensions(this.scale_width, this.scale_heigth);
+  }
+
+  view_speed(id){
+    this.velTopic.subscribe(function(message){
+      id.text("Velocidad: " + message.linear.x.toFixed(2) + " m/s");
+    })
+  }
+
+  stop(){
+    this.path.setPath(null);
+    this.stopTopic.publish({});
   }
 }

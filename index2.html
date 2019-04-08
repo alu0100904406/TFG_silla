@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -23,6 +24,20 @@
           }
         });
 
+        $( "#twod-map" ).on("mousedown", function(event) {
+          $( "#twod-map" ).on("mousemove", function(event) {
+            map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
+          });
+        });
+
+        $( "#twod-map" ).on("mouseup", function(event) {
+          $("#twod-map").off("mousemove");
+        });
+
+        window.onunload = function(){
+          map_navigation.stop();
+        }
+
         map_navigation.view_speed($("#vel"));
       }
 
@@ -39,7 +54,7 @@
       <div class="col-6" id="controller">
         <input type="checkbox" name="path" value="path" class="control-input" checked onchange="map_navigation.switch_path()"> Path <br>
         <button onclick="map_navigation.stop()">stop</button>
-        <p id="vel">Velocidad: 0.00 m/s</p>
+        <p id="vel">Speed: 0.00 m/s</p>
       </div>
     </div>
   </body>

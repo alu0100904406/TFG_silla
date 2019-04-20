@@ -20,3 +20,7 @@ function tfg_develop(){
   atom $HOME/Escritorio/TFG
   tfg_browser
 }
+
+function tfg_runjanus(){
+	sudo /opt/janus/bin/janus -F /opt/janus/etc/janus/
+}

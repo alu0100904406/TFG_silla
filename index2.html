@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -11,41 +10,12 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <link rel="stylesheet" type="text/css" href="index.css">
     <script type="text/javascript" src="./navigation.js"></script>
-    <script type="text/javascript">
-      var map_navigation;
-
-      function init(){
-        map_navigation = new Navigation();
-        map_navigation.set_map("twod-map");
-
-        $( "#twod-map" ).on("wheel", function(event) {
-          if (map_navigation.viewer2D.scene.mouseInBounds === true) {
-            map_navigation.zoom(event.originalEvent.deltaY);
-          }
-        });
-
-        $( "#twod-map" ).on("mousedown", function(event) {
-          $( "#twod-map" ).on("mousemove", function(event) {
-            map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
-          });
-        });
-
-        $( "#twod-map" ).on("mouseup", function(event) {
-          $("#twod-map").off("mousemove");
-        });
-
-        window.onunload = function(){
-          map_navigation.stop();
-        }
-
-        map_navigation.view_speed($("#vel"));
-      }
-
-
-    </script>
+    <script src="adapter.js"></script>
+    <script src="janus.js"></script>
+    <script defer type="text/javascript" src="./main.js"></script>
   </head>
 
-  <body onload="init()">
+  <body>
     <h1>Navigation</h1>
     <div class="row">
       <div class="col-4 offset-2">
@@ -55,6 +25,12 @@
         <input type="checkbox" name="path" value="path" class="control-input" checked onchange="map_navigation.switch_path()"> Path <br>
         <button onclick="map_navigation.stop()">stop</button>
         <p id="vel">Speed: 0.00 m/s</p>
+        <button id="publicar" onclick="publicar()">Publicar Stream</button>
+        <button id="subscribir" onclick="subscribir()">Subscribir a Streams</button>
+      </div>
+      <div>
+        <video id="local"  autoplay></video>
+        <video id="remote"  autoplay></video>
       </div>
     </div>
   </body>

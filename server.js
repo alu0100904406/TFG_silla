@@ -8,10 +8,10 @@ var io = require('socket.io')(http);
 
 http.listen(8080);
 
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + "/public"));
 
 app.get("/", function(req, res){
-    res.sendFile(__dirname + "/cuidador.html");
+    res.sendFile(__dirname + "/carer/index.html");
 });
 
 io.on('connection', function(socket){

@@ -1,17 +1,17 @@
-var map_navigation;
+/*var map_navigation;
 
 map_navigation = new Navigation();
 map_navigation.set_map("twod-map");
 
 $( "#twod-map" ).on("wheel", function(event) {
     if (map_navigation.viewer2D.scene.mouseInBounds === true) {
-    map_navigation.zoom(event.originalEvent.deltaY);
+        map_navigation.zoom(event.originalEvent.deltaY);
     }
 });
 
 $( "#twod-map" ).on("mousedown", function(event) {
     $( "#twod-map" ).on("mousemove", function(event) {
-    map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
+        map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
     });
 });
 
@@ -135,7 +135,7 @@ function subscribir(){
         });
         participants.length = 0;//USAR POP EN VEZ DE ESTO?
     }
-}
+}*/
 
 function addRemoteFeed(id){
     janus.attach(
@@ -182,9 +182,16 @@ function addRemoteFeed(id){
             }
         },
         onremotestream: function(stream){
+            //ESTO SE LLAMA DOS VECES UNA PARA AUDIO Y OTRA PARA VIDEO.pOR ESO DA ERROR.S
+            //var video = document.createElement("video");
             var video = document.querySelector("#remote");
             video.srcObject = stream;
+            /*video.autoplay = true;
+            $('#videos').append(video);*/
         }
     });
 }
+
+var socket = io();
+socket.emit('holacuidador',"Hola, soy el cuidador") 
 

@@ -1,23 +1,16 @@
 {
-  "name": "TFG",
+  "name": "tfg",
   "version": "1.0.0",
-  "description": "Asistencia remota de personas de movilidad reducida mediante la monitorización y control de una silla de ruedas inteligente mediante una interfaz web",
-  "main": "index.js",
+  "description": "",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "Cristian Jonay Ramos González",
+  "author": "",
   "license": "ISC",
-  "engines": {
-    "node": "11.11.0"
-  },
   "dependencies": {
     "express": "4.16.4",
-    "rosnodejs": "3.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/alu0100904406/TFG_silla.git"
+    "socket.io": "2.2.0"
   }
 }

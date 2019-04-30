@@ -13,7 +13,7 @@ function tfg_rosbridge(){
 }
 
 function tfg_browser(){
-  opera file:///home/cristian/Escritorio/TFG/index2.html
+  opera file:///home/cristian/Escritorio/TFG/index.html
 }
 
 function tfg_develop(){

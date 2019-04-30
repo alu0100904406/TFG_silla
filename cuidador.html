@@ -8,6 +8,7 @@
     <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
     <script src="./ros2d.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="index.css">
     <script type="text/javascript" src="./navigation.js"></script>
     <script src="adapter.js"></script>
@@ -28,9 +29,9 @@
         <button id="publicar" onclick="publicar()">Publicar Stream</button>
         <button id="subscribir" onclick="subscribir()">Subscribir a Streams</button>
       </div>
-      <div>
-        <video id="local"  autoplay></video>
-        <video id="remote"  autoplay></video>
+      <div id="videos">
+        <video id="local" autoplay></video>
+        <video id="remote" autoplay></video>
       </div>
     </div>
   </body>

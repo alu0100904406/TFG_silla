@@ -1,4 +1,4 @@
-body { background:#eee; margin:1em; text-align:center; }
+body { background:#eee; margin:1em; text-align:center; /*cursor: url("flag.cur"), auto;*/ }
 h1 { margin-bottom: 60px}
 canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc; visibility: hidden; max-width: 100%}
 .control-input { margin:1em auto; }

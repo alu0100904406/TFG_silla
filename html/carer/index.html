@@ -9,11 +9,11 @@
     <script src="js/ros2d.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-    <link rel="stylesheet" type="text/css" href="carer/css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="js/navigation.js"></script>
     <script src="js/adapter.js"></script>
     <script src="js/janus.js"></script>
-    <script defer type="text/javascript" src="carer/js/main.js"></script>
+    <script defer type="text/javascript" src="js/main.js"></script>
   </head>
 
   <body>
@@ -26,8 +26,7 @@
         <input type="checkbox" name="path" value="path" class="control-input" checked onchange="map_navigation.switch_path()"> Path <br>
         <button onclick="map_navigation.stop()">stop</button>
         <p id="vel">Speed: 0.00 m/s</p>
-        <button id="publicar" onclick="publicar()">Publicar Stream</button>
-        <button id="subscribir" onclick="subscribir()">Subscribir a Streams</button>
+        <button id="publicar" onclick="call()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg></button>
       </div>
       <div id="videos">
         <video id="local" autoplay></video>

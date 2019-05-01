@@ -1,30 +1,3 @@
-/*var map_navigation;
-
-map_navigation = new Navigation();
-map_navigation.set_map("twod-map");
-
-$( "#twod-map" ).on("wheel", function(event) {
-    if (map_navigation.viewer2D.scene.mouseInBounds === true) {
-        map_navigation.zoom(event.originalEvent.deltaY);
-    }
-});
-
-$( "#twod-map" ).on("mousedown", function(event) {
-    $( "#twod-map" ).on("mousemove", function(event) {
-        map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
-    });
-});
-
-$( "#twod-map" ).on("mouseup", function(event) {
-    $("#twod-map").off("mousemove");
-});
-
-window.onunload = function(){
-    map_navigation.stop();
-}
-
-map_navigation.view_speed($("#vel"));*/
-
 var janus = null;
 var videoroomPublisher = null;
 var videoroomSubscriber = null;
@@ -192,11 +165,9 @@ function addRemoteFeed(id){
     });
 }
 
-function call(){
-    var socket = io({ query: "tipo=carer" });
-    socket.emit('call');
-    socket.on('chair_response',() => { 
-        publicar();
-        subscribir();
-    });
-}
+var socket = io({ query: "tipo=chair_user" });
+socket.on('carer_calling',() => { 
+    socket.emit('response');
+    publicar();
+    subscribir();
+});

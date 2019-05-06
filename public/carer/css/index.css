@@ -5,3 +5,5 @@ canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc;
 #controller { text-align: left; }
 button { margin-left: 15px;}
 p { margin-left: 15px; margin-top: 1em;}
+#conference { width: 640px; height: 480px; }
+video { position: absolute; margin-top: 20px; margin-bottom: 20px;}

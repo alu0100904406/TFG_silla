@@ -192,8 +192,40 @@ function addRemoteFeed(id){
     });
 }
 
+var socket = io('/carers');
+
+socket.on('occupied', () => {
+    $('#care').attr("disabled", true);
+});
+
+socket.on('available', () => {
+    $('#care').attr("disabled", false);
+})
+
+socket.on('carer', () => { 
+    $('#publicar').attr("disabled", false);
+    $('#stop').attr("disabled", false);
+    $('#care').attr("disabled", true);
+    $('#care').hide();
+    $('#stopcare').removeAttr('hidden');
+    $('#stopcare').attr("disabled", false);
+});
+
+function care(){
+    socket.emit('care');
+}
+
+function stop_care(){
+    socket.emit('stop_care');
+    $('#publicar').attr("disabled", true);
+    $('#stop').attr("disabled", true);
+    $('#care').attr("disabled", false);
+    $('#care').show();
+    $('#stopcare').attr('hidden', true);
+    $('#stopcare').attr("disabled", true);
+}
+
 function call(){
-    var socket = io({ query: "tipo=carer" });
     socket.emit('call');
     socket.on('chair_response',() => { 
         publicar();

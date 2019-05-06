@@ -24,13 +24,15 @@
       </div>
       <div class="col-6" id="controller">
         <input type="checkbox" name="path" value="path" class="control-input" checked onchange="map_navigation.switch_path()"> Path <br>
-        <button onclick="map_navigation.stop()">stop</button>
+        <button id="stop" onclick="map_navigation.stop()" disabled>stop</button>
         <p id="vel">Speed: 0.00 m/s</p>
-        <button id="publicar" onclick="call()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg></button>
+        <button id="publicar" onclick="call()" disabled>CALL</button>
+        <button id="care" onclick="care()" disabled>CARE</button>
+        <button id="stopcare" onclick="stop_care()" disabled hidden>STOP CARE</button>
       </div>
-      <div id="videos">
-        <video id="local" autoplay></video>
-        <video id="remote" autoplay></video>
+      <div id="conference">
+        <video id="remote" width="640" height="480" autoplay></video>
+        <video id="local" width="256" height="144" autoplay></video>
       </div>
     </div>
   </body>

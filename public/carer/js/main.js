@@ -3,6 +3,8 @@ var map_navigation;
 map_navigation = new Navigation();
 map_navigation.set_map("twod-map");
 
+var place_mode = false;
+
 $( "#twod-map" ).on("wheel", function(event) {
     if (map_navigation.viewer2D.scene.mouseInBounds === true) {
         map_navigation.zoom(event.originalEvent.deltaY);
@@ -10,9 +12,11 @@ $( "#twod-map" ).on("wheel", function(event) {
 });
 
 $( "#twod-map" ).on("mousedown", function(event) {
-    $( "#twod-map" ).on("mousemove", function(event) {
-        map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
-    });
+    if(!place_mode){
+        $( "#twod-map" ).on("mousemove", function(event) {
+            map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
+        });
+    }
 });
 
 $( "#twod-map" ).on("mouseup", function(event) {
@@ -23,7 +27,36 @@ window.onunload = function(){
     map_navigation.stop();
 }
 
-map_navigation.view_speed($("#vel"));
+var dbclick_function = function(event){
+    if(map_navigation.get_scene().mouseInBounds === true && !place_mode){
+        map_navigation.set_goal(event.stageX, event.stageY);
+    }
+}
+
+this.map_navigation.set_dblclick_event(dbclick_function);
+
+var click_function = function(event){
+    if(map_navigation.get_scene().mouseInBounds === true && place_mode){
+        var place_name = prompt("Enter place name:", "Kitchen");
+        if(place_name != null){
+            var position = map_navigation.get_ros_position(event.stageX, event.stageY);
+
+            var data = { name: place_name, position: position }
+            $.ajax({
+                type: 'POST',
+                url: '/save_place',
+                contentType: 'application/json',
+                data: JSON.stringify(data)
+            });
+        }
+    }
+}
+
+this.map_navigation.set_click_event(click_function);
+
+map_navigation.subscribe_speed(function(message){
+    $("#vel").text("Speed: " + message.linear.x.toFixed(2) + " m/s");
+});
 
 var janus = null;
 var videoroomPublisher = null;
@@ -235,7 +268,6 @@ function call(){
     });
 }
 
-function place_mode(){
-    map_navigation.stop_goal_controller();
-    map_navigation.start_place_controller();
+function start_place_mode(){
+    place_mode = true;
 }

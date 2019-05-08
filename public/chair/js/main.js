@@ -171,3 +171,7 @@ socket.on('carer_calling',() => {
     publicar();
     subscribir();
 });
+
+$.get("/places", function(data, status){
+    console.log(data);
+});

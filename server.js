@@ -1,13 +1,26 @@
 const express = require('express');
+var bodyParser = require("body-parser");
 
 const app = express();
 const port =  8080;
+
 const http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+var sqlite3 = require('sqlite3');
+var db = new sqlite3.Database(__dirname + '/places.db');
+
+db.run("CREATE TABLE IF NOT EXISTS 'Places' (\
+    'Name' varchar(45) NOT NULL ,\
+    'pose_x' numeric NOT NULL ,\
+    'pose_y' numeric NOT NULL ,\
+    PRIMARY KEY ('Name'))");
 
 http.listen(port, () => { console.log("Listening on port: " + port);  });
 
 app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get("/carer", function(req, res){
     res.sendFile(__dirname + "/html/carer/index.html");
@@ -16,6 +29,43 @@ app.get("/carer", function(req, res){
 app.get("/chair", function(req, res){
     res.sendFile(__dirname + "/html/chair/index.html");
 });
+
+app.get("/places", function(req, res){
+    db.all('SELECT * FROM Places', [], (err, rows) => {
+        if (err) {
+          res.sendStatus(500);
+        }
+        else {
+            var json_places = { places: []}
+            rows.forEach((row) => {
+                var place = {
+                    name: row.Name,
+                    position: {
+                        x: row.pose_x,
+                        y: row.pose_y
+                    }
+                }
+                json_places.places.push(place);
+            });
+            res.json(json_places);
+        }
+    });
+});
+
+app.post("/save_place", function(req, res){
+    db.run("INSERT INTO 'Places' (Name, pose_x, pose_y) values('" + req.body.name + "'," 
+                                        + req.body.position.x + ","
+                                        + req.body.position.y+ ")",
+            (err) => {  
+                if (err) {
+                    res.sendStatus(409);//MANEJAR MEJOR ESTO
+                }
+                else {
+                    res.sendStatus(201);
+                }
+            }
+    );
+})
 
 var chair_user_id;
 var carer_id = null;

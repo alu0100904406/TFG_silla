@@ -40,6 +40,8 @@ class Navigation {
     this.path_state = false;
     this.switch_path();
 
+    this.goal_mode = true;
+    this.place_mode = false;
   }
 
   _initialize_topics(){
@@ -101,9 +103,9 @@ class Navigation {
     }.bind(this));
   }
 
-  _set_goal_controller(){
+  set_goal_controller(){ //PASAR FUNCION COMO PARAMETRO?
     this.viewer2D.scene.on('dblclick', function(event) {
-      if (this.viewer2D.scene.mouseInBounds === true) {
+      if (this.viewer2D.scene.mouseInBounds === true && this.goal_mode === true) {
 				var goal_pose = this.viewer2D.scene.globalToRos(event.stageX, event.stageY);
         var goal_message = new ROSLIB.Message({
           header:
@@ -121,6 +123,44 @@ class Navigation {
         this.goalTopic.publish(goal_message);
       }
     }.bind(this));
+  }
+
+  set_place_controller(){
+    //Poner scene como atributo? O pasar  function como parametro.
+    this.viewer2D.scene.on('click', function(event) {
+      if (this.viewer2D.scene.mouseInBounds === true && this.place_mode){
+        var place_name = prompt("Enter place name:", "Kitchen");
+        var place_pose = this.viewer2D.scene.globalToRos(event.stageX, event.stageY);
+
+        var data = {
+                      name: place_name, 
+                      position: {
+                        x: place_pose.x, 
+                        y: place_pose.y, 
+                      }
+                    }
+
+        console.log(data)
+        $.ajax({
+          type: 'POST',
+          url: '/save_place',
+          contentType: 'application/json',
+          data: JSON.stringify(data)
+        });
+      }
+    }.bind(this));
+  }
+
+  stop_goal_controller(){
+    this.goal_mode = false;
+  }
+
+  start_goal_controller(){
+    this.goal_mode = true;
+  }
+
+  start_place_controller(){
+    this.place_mode = true;
   }
 
   set_map(divID){
@@ -145,7 +185,8 @@ class Navigation {
 
       this.gridClient.rootObject.addChild(this.path);
       this._set_marker_on_map();
-      this._set_goal_controller();
+      this.set_goal_controller();
+      this.set_place_controller();
 
     }.bind(this));
   }

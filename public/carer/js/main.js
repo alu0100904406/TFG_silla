@@ -1,4 +1,4 @@
-/*var map_navigation;
+var map_navigation;
 
 map_navigation = new Navigation();
 map_navigation.set_map("twod-map");
@@ -23,7 +23,7 @@ window.onunload = function(){
     map_navigation.stop();
 }
 
-map_navigation.view_speed($("#vel"));*/
+map_navigation.view_speed($("#vel"));
 
 var janus = null;
 var videoroomPublisher = null;
@@ -209,6 +209,7 @@ socket.on('carer', () => {
     $('#care').hide();
     $('#stopcare').removeAttr('hidden');
     $('#stopcare').attr("disabled", false);
+    $('#place').attr("disabled", false);
 });
 
 function care(){
@@ -223,6 +224,7 @@ function stop_care(){
     $('#care').show();
     $('#stopcare').attr('hidden', true);
     $('#stopcare').attr("disabled", true);
+    $('#place').attr("disabled", true);
 }
 
 function call(){
@@ -231,4 +233,9 @@ function call(){
         publicar();
         subscribir();
     });
+}
+
+function place_mode(){
+    map_navigation.stop_goal_controller();
+    map_navigation.start_place_controller();
 }

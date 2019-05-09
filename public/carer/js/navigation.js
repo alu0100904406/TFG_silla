@@ -150,9 +150,7 @@ class Navigation {
     }.bind(this));
   }
 
-  set_goal(x, y){
-    if (this.viewer2D.scene.mouseInBounds === true && this.goal_mode === true) {
-      var goal_pose = this.viewer2D.scene.globalToRos(x, y);
+  set_goal(position){
       var goal_message = new ROSLIB.Message({
         header:
         {
@@ -160,14 +158,13 @@ class Navigation {
         },
         pose:
         {
-          position: {x: goal_pose.x, y: goal_pose.y, z: 0.0},
+          position: position,
           orientation: {x:0, y:0, z:0, w: 1.0}
         }
       });
 
       this.goal = goal_message.pose
       this.goalTopic.publish(goal_message);
-    }
   }
 
   switch_path(){

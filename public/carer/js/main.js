@@ -31,7 +31,8 @@ window.onunload = function(){
 var dbclick_function = function(event){
     if(map_navigation.get_scene().mouseInBounds === true && !place_mode && carer){
         //prevent default?
-        map_navigation.set_goal(event.stageX, event.stageY);
+        var position = map_navigation.get_ros_position(event.stageX, event.stageY);
+        map_navigation.set_goal(position);
     }
 }
 

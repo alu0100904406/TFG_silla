@@ -4,6 +4,7 @@ map_navigation = new Navigation();
 map_navigation.set_map("twod-map");
 
 var place_mode = false;
+var carer = false
 
 $( "#twod-map" ).on("wheel", function(event) {
     if (map_navigation.viewer2D.scene.mouseInBounds === true) {
@@ -28,7 +29,8 @@ window.onunload = function(){
 }
 
 var dbclick_function = function(event){
-    if(map_navigation.get_scene().mouseInBounds === true && !place_mode){
+    if(map_navigation.get_scene().mouseInBounds === true && !place_mode && carer){
+        //prevent default?
         map_navigation.set_goal(event.stageX, event.stageY);
     }
 }
@@ -236,6 +238,7 @@ socket.on('available', () => {
 })
 
 socket.on('carer', () => { 
+    carer = true;
     $('#publicar').attr("disabled", false);
     $('#stop').attr("disabled", false);
     $('#care').attr("disabled", true);
@@ -250,6 +253,8 @@ function care(){
 }
 
 function stop_care(){
+    carer = false;
+    $('#place').css("border-style", "outset");
     socket.emit('stop_care');
     $('#publicar').attr("disabled", true);
     $('#stop').attr("disabled", true);
@@ -268,6 +273,14 @@ function call(){
     });
 }
 
-function start_place_mode(){
-    place_mode = true;
+function switch_place_mode(){
+    place_mode = !place_mode;
+    if(place_mode){
+        $('#place').css("border-style", "inset");
+        $('canvas').css("cursor", "crosshair");
+    } 
+    else {
+        $('#place').css("border-style", "outset");
+        $('canvas').css("cursor", "default");
+    }
 }

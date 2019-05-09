@@ -1,6 +1,5 @@
 class Navigation {
-
-  constructor() {
+  constructor(url_ros) {
 
     this.position;
     this.goal;
@@ -40,6 +39,8 @@ class Navigation {
     this.path_state = false;
     this.switch_path();
 
+    this.goal_mode = true;
+    this.place_mode = false;
   }
 
   _initialize_topics(){
@@ -101,26 +102,27 @@ class Navigation {
     }.bind(this));
   }
 
-  _set_goal_controller(){
-    this.viewer2D.scene.on('dblclick', function(event) {
-      if (this.viewer2D.scene.mouseInBounds === true) {
-				var goal_pose = this.viewer2D.scene.globalToRos(event.stageX, event.stageY);
-        var goal_message = new ROSLIB.Message({
-          header:
-          {
-            frame_id: "map"
-          },
-          pose:
-          {
-            position: {x: goal_pose.x, y: goal_pose.y, z: 0.0},
-            orientation: {x:0, y:0, z:0, w: 1.0}
-          }
-        });
+  get_scene(){
+    return this.viewer2D.scene
+  }
 
-        this.goal = goal_message.pose
-        this.goalTopic.publish(goal_message);
-      }
-    }.bind(this));
+  get_ros_position(x, y){
+    var place_pose = this.viewer2D.scene.globalToRos(x, y);
+    return { x: place_pose.x, y: place_pose.y }                      
+  }
+
+  set_dblclick_event(listener_function){ 
+    this.dbclick_listener = listener_function;
+    this.viewer2D.scene.on('dblclick', this.dbclick_listener);
+  }
+
+  set_click_event(listener_function){
+    this.click_listener = listener_function;
+    this.viewer2D.scene.on('click', this.click_listener);
+  }
+
+  remove_click_event(){
+    this.viewer2D.scene.removeEventListener(click, this.click_listener);
   }
 
   set_map(divID){
@@ -141,13 +143,31 @@ class Navigation {
       this.zoom(0);
       this.viewer2D.shift(this.gridClient.currentGrid.pose.position.x, this.gridClient.currentGrid.pose.position.y);
 
-      $("canvas").css("visibility", "visible");
+      $("canvas").css("visibility", "visible");//QUITAR
 
       this.gridClient.rootObject.addChild(this.path);
       this._set_marker_on_map();
-      this._set_goal_controller();
-
     }.bind(this));
+  }
+
+  set_goal(x, y){
+    if (this.viewer2D.scene.mouseInBounds === true && this.goal_mode === true) {
+      var goal_pose = this.viewer2D.scene.globalToRos(x, y);
+      var goal_message = new ROSLIB.Message({
+        header:
+        {
+          frame_id: "map"
+        },
+        pose:
+        {
+          position: {x: goal_pose.x, y: goal_pose.y, z: 0.0},
+          orientation: {x:0, y:0, z:0, w: 1.0}
+        }
+      });
+
+      this.goal = goal_message.pose
+      this.goalTopic.publish(goal_message);
+    }
   }
 
   switch_path(){
@@ -172,10 +192,8 @@ class Navigation {
     this.viewer2D.scaleToDimensions(this.scale_width, this.scale_heigth);
   }
 
-  view_speed(id){
-    this.velTopic.subscribe(function(message){
-      id.text("Speed: " + message.linear.x.toFixed(2) + " m/s");
-    })
+  subscribe_speed(listener_function){
+    this.velTopic.subscribe(listener_function)
   }
 
   stop(){
@@ -192,3 +210,4 @@ class Navigation {
     this.viewer2D.shift(x,y);
   }
 }
+

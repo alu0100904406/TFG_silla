@@ -1,3 +1,17 @@
+var map_navigation;
+
+map_navigation = new Navigation();
+$.get("/places", function(data, status){
+    for(const place in data.places){
+        var button = $('<button>"</button>').text(data.places[place].name);
+        button.click(function(){
+            map_navigation.set_goal(data.places[place].position);
+        })
+        $('#place-buttons').append(button);
+    }
+});
+
+
 var janus = null;
 var videoroomPublisher = null;
 var videoroomSubscriber = null;
@@ -172,6 +186,3 @@ socket.on('carer_calling',() => {
     subscribir();
 });
 
-$.get("/places", function(data, status){
-    console.log(data);
-});

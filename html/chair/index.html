@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://static.robotwebtools.org/EaselJS/current/easeljs.js"></script>
+    <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+    <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
+    <script src="js/ros2d.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/adapter.js"></script>
     <script src="js/janus.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script defer type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
+    <div id="place-buttons"></div> 
     <div id="conference">
         <video id="remote" width="640" height="480" autoplay></video>
         <video id="local" width="256" height="144" autoplay></video>
-    </div>  
+    </div>
 </body>
 </html>

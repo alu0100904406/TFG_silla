@@ -65,7 +65,20 @@ app.post("/save_place", function(req, res){
                 }
             }
     );
-})
+});
+
+app.delete('/place', function(req, res){
+    db.run("DELETE FROM 'Places' WHERE (Name ='" + req.body.name + "')",//USAR DATA BINDINGS EN VEZ DE CONCATENACION
+            (err) => {  
+                if (err) {
+                    res.sendStatus(409);//MANEJAR MEJOR ESTO
+                }
+                else {
+                    res.sendStatus(204);
+                }
+            }
+    );
+});
 
 var chair_user_id;
 var carer_id = null;
@@ -97,6 +110,10 @@ carers_sockets.on('connection', function(socket){
 
         socket.broadcast.emit('available');   
         //Borrar listeners?     
+    });
+
+    socket.on('place_added', (place) => {
+        io.to(chair_user_id).emit('place_added', place);
     });
 
     socket.on('disconnect', () => {

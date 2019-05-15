@@ -36,6 +36,12 @@ var dbclick_function = function(event){
     }
 }
 
+$.get("/places", function(data, status){
+    for(const place in data.places){
+        map_navigation.set_place_marker(data.places[place].position, data.places[place].name);
+    }
+});
+
 this.map_navigation.set_dblclick_event(dbclick_function);
 
 var click_function = function(event){
@@ -49,8 +55,13 @@ var click_function = function(event){
                 type: 'POST',
                 url: '/save_place',
                 contentType: 'application/json',
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
+                success: function(){
+                    socket.emit('place_added', data);  
+                }
             });
+
+            map_navigation.set_place_marker(position);
         }
     }
 }
@@ -80,7 +91,7 @@ Janus.init({
 function attach(){
     janus = new Janus(
     {
-        server: 'http://127.0.0.1:8088/janus',
+        server: 'http://192.168.0.162:8088/janus',
         success: function() {
             janus.attach(
             {

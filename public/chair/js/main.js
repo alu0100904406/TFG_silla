@@ -186,3 +186,11 @@ socket.on('carer_calling',() => {
     subscribir();
 });
 
+socket.on('place_added',(place) => { 
+    var button = $('<button>"</button>').text(place.name);
+    button.click(function(){
+        map_navigation.set_goal(place.position);
+    })
+    $('#place-buttons').append(button);
+});
+

@@ -2,3 +2,5 @@ node_modules
 *.db
 .tfg_commands.sh
 enlaces
+.cert
+.key

@@ -8,29 +8,40 @@
     <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
     <script src="js/ros2d.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="js/navigation.js"></script>
     <script src="js/adapter.js"></script>
     <script src="js/janus.js"></script>
     <script defer type="text/javascript" src="js/main.js"></script>
+    <script defer src="js/graphs.js"></script>
   </head>
 
   <body>
-    <h1>Navigation</h1>
+    <div id="bar"><h1>Navigation</h1></div>
     <div class="row">
       <div class="col-4 offset-2">
         <div id="twod-map"></div>
       </div>
       <div class="col-6" id="controller">
-        <input type="checkbox" name="path" value="path" class="control-input" checked onchange="map_navigation.switch_path()"> Path <br>
-        <button id="stop" onclick="map_navigation.stop()" disabled>stop</button>
+
+        <input type="checkbox" name="path" value="path" class="control-input" checked onchange="map_navigation.switch_path()"> Path 
+        <br>
+
+        <button class="btn btn-danger" id="stop" onclick="map_navigation.stop()" disabled>
+          STOP
+        </button>
+
         <p id="vel">Speed: 0.00 m/s</p>
-        <button id="publicar" onclick="call()" disabled>CALL</button>
-        <button id="place" onclick="switch_place_mode()" disabled>PLACE</button>
+        
+        <button id="publicar" onclick="call()" class="btn btn-secondary" disabled>CALL</button>
+        
+        <button id="place" onclick="switch_place_mode()" class="btn btn-secondary" disabled>PLACE</button>
         <br><br>
-        <button id="care" onclick="care()" disabled>CARE</button>
-        <button id="stopcare" onclick="stop_care()" disabled hidden>STOP CARE</button>
+        <button id="care" onclick="care()" class="btn btn-success" disabled>CARE</button>
+        <button id="stopcare" onclick="stop_care()" class="btn btn-warning" disabled hidden>STOP CARE</button>
+        <br><br>
       </div>
       <div id="conference">
         <video id="remote" width="640" height="480" autoplay></video>

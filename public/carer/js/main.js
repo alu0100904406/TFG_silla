@@ -91,7 +91,7 @@ Janus.init({
 function attach(){
     janus = new Janus(
     {
-        server: 'http://192.168.0.162:8088/janus',
+        server: 'https://localhost:443/janus',
         success: function() {
             janus.attach(
             {
@@ -239,7 +239,7 @@ function addRemoteFeed(id){
     });
 }
 
-var socket = io('/carers');
+var socket = io.connect('http://127.0.0.1:8080/carers');
 
 socket.on('occupied', () => {
     $('#care').attr("disabled", true);

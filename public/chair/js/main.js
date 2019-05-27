@@ -31,7 +31,7 @@ Janus.init({
 function attach(){
     janus = new Janus(
     {
-        server: 'http://127.0.0.1:8088/janus',
+        server: '/janus',
         success: function() {
             janus.attach(
             {

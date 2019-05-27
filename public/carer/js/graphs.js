@@ -48,7 +48,74 @@ temperature.subscribe(function(msg){
 });
 
 //ESTO CON JQUERY Y LAS GRAFICAS CON GOOGLE CHARTS
+var battery_test = 100;
 var svg_battery = d3.select('body').append('svg').attr("width", 50).attr("height",100);
-
-svg_battery.append('rect').attr('y', 100-75).attr('height',75).attr('width', 50).attr('fill','green');
+bar_battery = svg_battery.append('rect').attr('y', 100-battery_test).attr('height',battery_test).attr('width', 50).attr('fill','green');
 svg_battery.append('rect').attr('y', 0).attr('height',100).attr('width', 50).attr('style', 'stroke-width:8;stroke:rgb(0,0,0)').attr('fill-opacity','0');
+var b_text = svg_battery.append('text').text(battery_test + '%').attr('x',12).attr('y',50);
+
+var battery_test = 100;
+setInterval(function(){
+    if(battery_test === -1){
+        battery_test = 100;
+    }
+    bar_battery.attr('y', 100-battery_test).attr('height',battery_test);
+    b_text.text(Math.floor(battery_test) + '%');
+    if(battery_test <= 25){
+        bar_battery.attr('fill','red');
+    }
+    else {
+        bar_battery.attr('fill','green');
+    }
+    battery_test--;
+}.bind(this), 250);    
+
+//GOOGLE CHARTS
+var heartbeat = new ROSLIB.Topic({
+    ros         : rosHeartbeat,
+    name        : '/heartbeat',
+    messageType : 'std_msgs/Float64'
+});
+google.charts.load('current', {packages: ['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+var data;
+var chart;
+var options;
+function drawChart() {
+    // Define the chart to be drawn.
+    data = new google.visualization.DataTable();
+    data.addColumn('string', 'Element');
+    data.addColumn('number', 'latidos');
+
+    options = { 
+        title: 'HEARTBEAT',
+        legend: {
+            position: 'none'
+        },
+        curveType: 'function',
+        vAxis: {
+            'minValue': -1, 
+            'maxValue': 1
+        },
+    }
+
+    // Instantiate and draw the chart.
+    chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+    chart.draw(data, options);
+    
+}
+
+heartbeat.subscribe(function(msg){
+    if(data. getNumberOfRows() < 50){
+        data.addRows([['',msg.data]]);
+    }
+    else {
+        data.removeRow(0);
+        data.addRows([['',msg.data]]);
+    }
+    chart.draw(data,options);
+}.bind(this));
+
+
+
+    

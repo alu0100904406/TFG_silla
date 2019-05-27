@@ -15,6 +15,7 @@
     <script src="js/adapter.js"></script>
     <script src="js/janus.js"></script>
     <script defer type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script defer src="js/graphs.js"></script>
   </head>
 
@@ -43,10 +44,15 @@
         <button id="stopcare" onclick="stop_care()" class="btn btn-warning" disabled hidden>STOP CARE</button>
         <br><br>
       </div>
-      <div id="conference">
-        <video id="remote" width="640" height="480" autoplay></video>
-        <video id="local" width="256" height="144" autoplay></video>
-      </div>
+    </div>
+    <div id="curve_chart" style="align-content: center;"></div>
+    <div id="visualization">
+      <img id="visualization_stream" src="/stream?topic=/camera/rgb/image_color">
+      <br><br>
+    </div>
+    <div id="conference">
+      <video id="remote" width="640" height="480" autoplay></video>
+      <video id="local" width="256" height="144" autoplay></video>
     </div>
   </body>
 </html>

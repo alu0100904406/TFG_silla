@@ -42,6 +42,16 @@ $.get("/places", function(data, status){
     }
 });
 
+$.get("/list_streams", function(data, status){
+    data.topics.forEach(function(element) {
+        var button = $('<button>"</button>').text(element);
+        button.click(function(){
+            $('#visualization_stream').attr("src", "http://localhost:8123/stream?topic=" + element);
+        })
+        $('#visualization').append(button);
+    });
+});
+
 this.map_navigation.set_dblclick_event(dbclick_function);
 
 var click_function = function(event){
@@ -91,7 +101,7 @@ Janus.init({
 function attach(){
     janus = new Janus(
     {
-        server: 'https://localhost:443/janus',
+        server: '/janus',
         success: function() {
             janus.attach(
             {
@@ -239,7 +249,7 @@ function addRemoteFeed(id){
     });
 }
 
-var socket = io.connect('http://127.0.0.1:8080/carers');
+var socket = io.connect('/carers');
 
 socket.on('occupied', () => {
     $('#care').attr("disabled", true);

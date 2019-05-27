@@ -102,19 +102,27 @@ function drawChart() {
     // Instantiate and draw the chart.
     chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
     chart.draw(data, options);
-    
-}
-
+    var count = 1;
 heartbeat.subscribe(function(msg){
-    if(data. getNumberOfRows() < 50){
-        data.addRows([['',msg.data]]);
+    if(count === 1){
+        if(data. getNumberOfRows() < 100){
+            data.addRows([['',msg.data]]);
+        }
+        else {
+            data.removeRow(0);
+            data.addRows([['',msg.data]]);
+        }
+        chart.draw(data,options);
+        count = 0;
     }
     else {
-        data.removeRow(0);
-        data.addRows([['',msg.data]]);
+        count++;
     }
-    chart.draw(data,options);
+    
 }.bind(this));
+}
+
+
 
 
 

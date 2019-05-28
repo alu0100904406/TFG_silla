@@ -10,7 +10,7 @@ class Navigation {
     this.scale_heigth;
 
     this.ros = new ROSLIB.Ros({
-      url : 'ws://localhost:9090'//Conexion a rosbridge
+      url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
     });
 
     this.ros.on('connection', function() {
@@ -21,8 +21,9 @@ class Navigation {
         this.conectado = false;
     });
 
-    this.ros.on('error', function() {
+    this.ros.on('error', function(error) {
         this.conectado = false;
+        console.log(error)
     });
 
     this.robotMarker = new ROS2D.NavigationArrow({
@@ -206,5 +207,25 @@ class Navigation {
   shift_map(x,y){
     this.viewer2D.shift(x,y);
   }
+
+  set_place_marker(pos,name){
+    var polygon = new ROS2D.PolygonMarker({
+      pointCallBack : function(){
+        if (confirm("¿Eliminar " + name + "?")) {
+          this.viewer2D.scene.removeChild(polygon);
+          $.ajax({
+            url: '/place',
+            type: 'DELETE',
+            contentType: 'application/json',
+            data: JSON.stringify({ name: name})
+          });
+        }
+      }.bind(this),
+      pointSize: 5
+    });
+    this.viewer2D.scene.addChild(polygon);
+    polygon.addPoint(pos);
+  }
 }
+
 

@@ -30,6 +30,10 @@ app.get("/chair", function(req, res){
     res.sendFile(__dirname + "/html/chair/index.html");
 });
 
+app.get("/graphs", function(req, res){
+    res.sendFile(__dirname + "/html/graphs.html");
+});
+
 app.get("/places", function(req, res){
     db.all('SELECT * FROM Places', [], (err, rows) => {
         if (err) {

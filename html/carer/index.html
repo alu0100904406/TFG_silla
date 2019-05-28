@@ -2,13 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://static.robotwebtools.org/EaselJS/current/easeljs.js"></script>
     <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
     <script src="js/ros2d.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="js/navigation.js"></script>
@@ -16,12 +16,12 @@
     <script src="js/janus.js"></script>
     <script src="js/videoconference.js"></script>
     <script defer type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script defer src="js/graphs.js"></script>
   </head>
 
   <body>
-    <div id="bar"><h1>Navigation</h1></div>
+    <div id="bar"><h1>Navigation</h1><button id="navigate_graphs" class="btn btn-primary"><a href="/graphs"><i class="material-icons">
+      bar_chart
+      </i></a></button></div>
     <div class="row">
       <div class="col-4 offset-2">
         <div id="twod-map"></div>
@@ -37,16 +37,25 @@
 
         <p id="vel">Speed: 0.00 m/s</p>
         
-        <button id="publicar" onclick="call()" class="btn btn-secondary" disabled>CALL</button>
+        <button id="publicar" onclick="call()" class="btn btn-secondary" disabled>
+          <i class="material-icons">
+            videocam
+          </i>
+        </button>
         
-        <button id="place" onclick="switch_place_mode()" class="btn btn-secondary" disabled>PLACE</button>
+        <button id="place" onclick="switch_place_mode()" class="btn btn-secondary" disabled>
+          <i class="material-icons">
+            place
+          </i>
+        </button>
         <br><br>
-        <button id="care" onclick="care()" class="btn btn-success" disabled>CARE</button>
+        <button id="care" onclick="care()" class="btn btn-success" disabled>
+          CARE
+        </button>
         <button id="stopcare" onclick="stop_care()" class="btn btn-warning" disabled hidden>STOP CARE</button>
         <br><br>
       </div>
     </div>
-    <div id="curve_chart" style="align-content: center;"></div>
     <div id="visualization">
       <img id="visualization_stream" src="/stream?topic=/camera/rgb/image_color">
       <br><br>

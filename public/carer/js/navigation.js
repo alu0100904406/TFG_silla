@@ -225,5 +225,6 @@ class Navigation {
     });
     this.viewer2D.scene.addChild(polygon);
     polygon.addPoint(pos);
+    this.viewer2D.scene.addChild(polygon);
   }
 }

@@ -13,7 +13,7 @@ $( "#twod-map" ).on("wheel", function(event) {
 });
 
 $( "#twod-map" ).on("mousedown", function(event) {
-    if(!place_mode){
+    if(map_navigation.get_scene().mouseInBounds === true && !place_mode){
         $( "#twod-map" ).on("mousemove", function(event) {
             map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
         });
@@ -22,6 +22,12 @@ $( "#twod-map" ).on("mousedown", function(event) {
 
 $( "#twod-map" ).on("mouseup", function(event) {
     $("#twod-map").off("mousemove");
+});
+
+$('body').on('mousemove', function(event){
+    if(!map_navigation.get_scene().mouseInBounds){
+        $("#twod-map").off("mousemove");
+    }
 });
 
 window.onunload = function(){

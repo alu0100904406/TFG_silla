@@ -2,8 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://static.robotwebtools.org/EaselJS/current/easeljs.js"></script>
     <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
@@ -15,54 +16,64 @@
     <script src="js/adapter.js"></script>
     <script src="js/janus.js"></script>
     <script src="js/videoconference.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="js/graphs.js"></script>
     <script defer type="text/javascript" src="js/main.js"></script>
   </head>
 
   <body>
-    <div id="bar"><h1>Navigation</h1><button id="navigate_graphs" class="btn btn-primary"><a href="/graphs"><i class="material-icons">
-      bar_chart
-      </i></a></button></div>
-    <div class="row">
-      <div class="col-4 offset-2">
-        <div id="twod-map"></div>
-      </div>
-      <div class="col-6" id="controller">
+    <div id="bar"><h1>Navigation</h1>
+      <button id="show_graphs" onclick="drawChart()"><i class="material-icons">
+        bar_chart
+      </i></button>
+      <button id="navigate_visualization" onclick=""><i class="material-icons">
+        video_label
+      </i></button>
+    </div>
+    <div>
+      <div id="twod-map"></div>
+      
+      <div id="controller">
 
         <input type="checkbox" name="path" value="path" class="control-input" checked onchange="map_navigation.switch_path()"> Path 
         <br>
 
-        <button class="btn btn-danger" id="stop" onclick="map_navigation.stop()" disabled>
+        <button id="stop" onclick="map_navigation.stop()" disabled>
           STOP
         </button>
 
         <p id="vel">Speed: 0.00 m/s</p>
         
-        <button id="publicar" onclick="call()" class="btn btn-secondary" disabled>
+        <button id="publicar" onclick="call()" disabled>
           <i class="material-icons">
             videocam
           </i>
         </button>
         
-        <button id="place" onclick="switch_place_mode()" class="btn btn-secondary" disabled>
+        <button id="place" onclick="switch_place_mode()" disabled>
           <i class="material-icons">
             place
           </i>
         </button>
         <br><br>
-        <button id="care" onclick="care()" class="btn btn-success" disabled>
+        <button id="care" onclick="care()" disabled>
           CARE
         </button>
-        <button id="stopcare" onclick="stop_care()" class="btn btn-warning" disabled hidden>STOP CARE</button>
+        <button id="stopcare" onclick="stop_care()" disabled hidden>STOP CARE</button>
         <br><br>
       </div>
     </div>
-    <div id="visualization">
-      <img id="visualization_stream" src="/stream?topic=/camera/rgb/image_color">
-      <br><br>
+    <div id="graphs">
+      <div id="heartbeat_chart"></div>
+      <div id="humidity_chart"></div>
     </div>
+    <div id="visualization">
+    </div>
+    <!-- CONFERENCIA
     <div id="conference">
       <video id="remote" width="640" height="480" autoplay></video>
       <video id="local" width="256" height="144" autoplay></video>
     </div>
+    -->
   </body>
 </html>

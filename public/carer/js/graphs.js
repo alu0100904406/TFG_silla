@@ -3,7 +3,7 @@ rosHeartbeat = new ROSLIB.Ros({
 });
 
 //TERMOMETRO
-var temperature = new ROSLIB.Topic({
+/*var temperature = new ROSLIB.Topic({
     ros         : rosHeartbeat,
     name        : '/temperature_avg',
     messageType : 'std_msgs/Float64'
@@ -68,7 +68,7 @@ setInterval(function(){
         bar_battery.attr('fill','green');
     }
     battery_test--;
-}.bind(this), 250);    
+}.bind(this), 250);   */ 
 
 //GOOGLE CHARTS
 var heartbeat = new ROSLIB.Topic({
@@ -84,7 +84,7 @@ var humidity = new ROSLIB.Topic({
 });
 
 google.charts.load('current', {packages: ['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+google.charts.setOnLoadCallback();//HABILITAR BOTON
 var data, data_humidity;
 var chart, chart_humidity;
 var options, options_humidity;

@@ -15,6 +15,7 @@ $( "#twod-map" ).on("wheel", function(event) {
 $( "#twod-map" ).on("mousedown", function(event) {
     if(map_navigation.get_scene().mouseInBounds === true && !place_mode){
         $( "#twod-map" ).on("mousemove", function(event) {
+            //COMO TENER EN CUENTA EL ZOOM?
             map_navigation.shift_map(-event.originalEvent.movementX,event.originalEvent.movementY);
         });
     }
@@ -48,15 +49,23 @@ $.get("/places", function(data, status){
     }
 });
 
+
 $.get("/list_streams", function(data, status){
     data.topics.forEach(function(element) {
         var button = $('<button>"</button>').text(element);
         button.click(function(){
-            $('#visualization_stream').attr("src", "http://localhost:8123/stream?topic=" + element);
+            var streams_window = window.open("", "", "width=500,height=500");
+            $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;')
+            $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://localhost:8123/stream?topic=" + element + "'>");
+            
+            //$('#visualization_stream').attr("src", "http://localhost:8123/stream?topic=" + element);
         })
         $('#visualization').append(button);
     });
+    
 });
+
+
 
 this.map_navigation.set_dblclick_event(dbclick_function);
 

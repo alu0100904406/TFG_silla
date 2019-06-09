@@ -49,8 +49,8 @@ $.get("/places", function(data, status){
 });
 
 var socket = io({ query: "tipo=chair_user" });
-socket.on('carer_calling',() => { 
-    socket.emit('response');
+socket.on('carer_calling',(data) => { 
+    socket.emit('response',{caller:data.caller});
     publicar();
     subscribir();
 });

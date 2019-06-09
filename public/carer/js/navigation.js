@@ -146,7 +146,8 @@ class Navigation {
       this.scale_width = this.gridClient.currentGrid.width;
       this.scale_heigth = this.gridClient.currentGrid.height;
       this.zoom(0);
-      $("canvas").css("visibility", "visible");
+      $(".progress").css("visibility", "hidden");
+      $("#panel").css("visibility", "visible");
       $("canvas").css("background-color", "#7F7F7F");//QUITAR
     }.bind(this));
   }

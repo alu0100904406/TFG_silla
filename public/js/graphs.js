@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, {});
+});
+
 rosHeartbeat = new ROSLIB.Ros({
     url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
 });
@@ -84,7 +89,7 @@ var humidity = new ROSLIB.Topic({
 });
 
 google.charts.load('current', {packages: ['corechart']});
-google.charts.setOnLoadCallback();//HABILITAR BOTON
+google.charts.setOnLoadCallback(drawChart);//HABILITAR BOTON
 var data, data_humidity;
 var chart, chart_humidity;
 var options, options_humidity;
@@ -134,7 +139,7 @@ function drawChart() {
     var count = 1;
     heartbeat.subscribe(function(msg){
         if(count === 1){
-            if(data. getNumberOfRows() < 50){
+            if(data. getNumberOfRows() < 40){
                 data.addRows([['',msg.data]]);
             }
             else {
@@ -151,8 +156,8 @@ function drawChart() {
     }.bind(this));
 
     humidity.subscribe(function(msg){
-        if(count_humidity === 2){
-            if(data_humidity. getNumberOfRows() < 50){
+        if(count_humidity === 3){
+            if(data_humidity. getNumberOfRows() < 40){
                 data_humidity.addRows([['',msg.data]]);
             }
             else {
@@ -167,6 +172,25 @@ function drawChart() {
         }
         
     }.bind(this));
+}
+
+function visualization(){
+    $.get("/list_streams", function(data, status){
+        var streams_window = window.open("", "", "width=500,height=500");
+        $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
+        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://localhost:8123/stream?topic=" + data.topics[0] + "'>");
+        var select = $('<select/>');
+        select.attr('style','position: fixed;top: 10px;right: 10px;')
+        select.on('change',function(){
+            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://localhost:8123/stream?topic=" + this.value);
+        })
+        $(streams_window.document.body).prepend(select);
+        data.topics.forEach(function(topic) {
+            var option = $('<option/>');
+            option.text(topic);
+            select.append(option); 
+        });
+    });
 }
 
 

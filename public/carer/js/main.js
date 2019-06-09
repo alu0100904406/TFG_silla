@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, {});
+  });
+
 var map_navigation;
 
 map_navigation = new Navigation();
@@ -8,6 +13,7 @@ var carer = false
 
 $( "#twod-map" ).on("wheel", function(event) {
     if (map_navigation.viewer2D.scene.mouseInBounds === true) {
+        event.preventDefault();
         map_navigation.zoom(event.originalEvent.deltaY);
     }
 });
@@ -37,7 +43,7 @@ window.onunload = function(){
 
 var dbclick_function = function(event){
     if(map_navigation.get_scene().mouseInBounds === true && !place_mode && carer){
-        //prevent default?
+        event.preventDefault();
         var position = map_navigation.get_ros_position(event.stageX, event.stageY);
         map_navigation.set_goal(position);
     }
@@ -50,22 +56,24 @@ $.get("/places", function(data, status){
 });
 
 
-$.get("/list_streams", function(data, status){
-    data.topics.forEach(function(element) {
-        var button = $('<button>"</button>').text(element);
-        button.click(function(){
-            var streams_window = window.open("", "", "width=500,height=500");
-            $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;')
-            $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://localhost:8123/stream?topic=" + element + "'>");
-            
-            //$('#visualization_stream').attr("src", "http://localhost:8123/stream?topic=" + element);
+function visualization(){
+    $.get("/list_streams", function(data, status){
+        var streams_window = window.open("", "", "width=500,height=500");
+        $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
+        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://localhost:8123/stream?topic=" + data.topics[0] + "'>");
+        var select = $('<select/>');
+        select.attr('style','position: fixed;top: 10px;right: 10px;')
+        select.on('change',function(){
+            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://localhost:8123/stream?topic=" + this.value);
         })
-        $('#visualization').append(button);
+        $(streams_window.document.body).prepend(select);
+        data.topics.forEach(function(topic) {
+            var option = $('<option/>');
+            option.text(topic);
+            select.append(option); 
+        });
     });
-    
-});
-
-
+}
 
 this.map_navigation.set_dblclick_event(dbclick_function);
 
@@ -113,10 +121,11 @@ socket.on('carer', () => {
     $('#publicar').attr("disabled", false);
     $('#stop').attr("disabled", false);
     $('#care').attr("disabled", true);
-    $('#care').hide();
+    //$('#care').hide();
     $('#stopcare').removeAttr('hidden');
     $('#stopcare').attr("disabled", false);
     $('#place').attr("disabled", false);
+    $('.red_icon').attr('style','color: #d50000;');
 });
 
 function care(){
@@ -134,14 +143,27 @@ function stop_care(){
     $('#stopcare').attr('hidden', true);
     $('#stopcare').attr("disabled", true);
     $('#place').attr("disabled", true);
+    $('#place').removeAttr('style');
+    $('canvas').css("cursor", "default");
+    $('.red_icon').removeAttr('style','color: #d50000;');
+    map_navigation.stop();
+    //cerrar llamada
 }
 
 function call(){
-    socket.emit('call');
+    /*socket.emit('call');
     socket.on('chair_response',() => { 
         publicar();
         subscribir();
-    });
+    });*/
+    var streams_window = window.open("", "", "width=500,height=500");
+    streams_window.document.head.innerHTML = '<title>Hi</title></head>';
+    $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
+    //$(streams_window.document.body).html("<div id='remote'></div><div id='local></div>");*/
+    var html = "<html><head><script src='https://code.jquery.com/jquery-1.10.2.js'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js'></script><script src='js/adapter.js'></script><script src='js/janus.js'></script><script src='js/videoconference.js'></script></head><body style='margin: 0;background-color: black;'><div id='remote'></div><div id='local'></div></body></html>" ;
+
+    streams_window.document.write(html);
+
 }
 
 function switch_place_mode(){
@@ -151,7 +173,7 @@ function switch_place_mode(){
         $('canvas').css("cursor", "crosshair");
     } 
     else {
-        $('#place').css("border-style", "outset");
+        $('#place').removeAttr('style');
         $('canvas').css("cursor", "default");
     }
 }

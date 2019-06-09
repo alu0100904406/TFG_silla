@@ -95,15 +95,19 @@ carers_sockets.on('connection', function(socket){
         socket.emit('available');
     }
 
+    socket.on('call', () => {
+        io.to(chair_user_id).emit('carer_calling', { caller: socket.id });
+    });
+
     socket.on('care', () => {
         if(carer_id === null){
             carer_id = socket.id;
 
             socket.broadcast.emit('occupied');
 
-            socket.on('call', () => {
+            /*socket.on('call', () => {
                 io.to(chair_user_id).emit('carer_calling');
-            });
+            });*/
 
             socket.emit('carer');
         }
@@ -133,8 +137,8 @@ io.on('connection', function(socket){
     if(socket.handshake.query.tipo === 'chair_user'){
         chair_user_id = socket.id;
 
-        socket.on('response', () => {
-            carers_sockets.to(carer_id).emit('chair_response');
+        socket.on('response', (data) => {
+            carers_sockets.to(data.caller).emit('chair_response');
         });
     }
 });

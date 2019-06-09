@@ -164,3 +164,11 @@ function addRemoteFeed(id){
         }
     });
 }
+
+var socket = io.connect('/carers');
+socket.emit('call');
+socket.on('chair_response',() => { 
+    publicar();
+    subscribir();
+});
+

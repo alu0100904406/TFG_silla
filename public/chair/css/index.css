@@ -1,3 +1,22 @@
-body { background:#eee; margin:1em; text-align:center; }
-#conference { width: 640px; height: 480px; }
-video { position: absolute; margin-top: 20px; margin-bottom: 20px;}
+#panel {
+    margin-top: 3%;
+}
+
+#twod-map {
+    text-align: center;
+}
+
+#remote {
+    object-fit: contain;
+}
+
+#conference {
+    position: relative;
+}
+
+#local {
+    position: absolute;
+    bottom: 10px;
+    right: 18px;
+    object-fit: contain;
+}

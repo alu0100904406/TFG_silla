@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+    background-color: black;
+}
+
+#local {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    object-fit: contain;
+}
+
+#remote {
+    position: fixed;
+    object-fit: contain;
+}
+

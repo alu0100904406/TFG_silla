@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://static.robotwebtools.org/EaselJS/current/easeljs.js"></script>
     <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
@@ -13,16 +17,36 @@
     <script src="js/videoconference.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script defer type="text/javascript" src="js/main.js"></script>
+    <title>Chair User</title>
 </head>
 <body>
+    <nav>
+        <div class="nav-wrapper grey darken-4">
+            <a href="#!" class="brand-logo"><i class="material-icons">navigate_next</i>Chair User</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/graphs" target="_blank"><i class="material-icons">bar_chart</i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-demo">
+        <li><a href="/graphs" target="_blank"><i class="material-icons">bar_chart</i>Gráficas</a></li>
+    </ul>
+
+    <div id="panel" class="row">
+        <div id="twod-map" class="col l6 s12 xl6 m12"></div>
+        <div id="conference" class="col l5 s12 xl5 m12">
+            <video id="remote" height="100%" width="100%" autoplay></video>
+            <video id="local" width="25%" height="25%" autoplay></video>
+        </div>
+    </div>
+
     <div id="place-buttons"></div> 
     <div class="col-4 offset-2">
-        <div id="twod-map"></div>
+        
     </div>
-    <div id="conference">
-        <video id="remote" width="640" height="480" autoplay></video>
-        <video id="local" width="256" height="144" autoplay></video>
-    </div>
+    
     
 </body>
 </html>

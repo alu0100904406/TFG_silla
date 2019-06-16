@@ -26,6 +26,15 @@ app.get("/carer", function(req, res){
     res.sendFile(__dirname + "/html/carer/index.html");
 });
 
+app.get("/carer/call/:socket_id", function(req, res){
+    //if(("/carers#" + req.params.socket_id)==carer_id){
+        res.sendFile(__dirname + "/html/carer/call.html");
+    //}
+    /*else{
+        res.sendStatus(403);
+    }*/
+});
+
 app.get("/chair", function(req, res){
     res.sendFile(__dirname + "/html/chair/index.html");
 });

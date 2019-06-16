@@ -156,13 +156,14 @@ function call(){
         publicar();
         subscribir();
     });*/
-    var streams_window = window.open("", "", "width=500,height=500");
-    streams_window.document.head.innerHTML = '<title>Hi</title></head>';
+    id = socket.id.split('#')[1];
+    var streams_window = window.open("https://localhost/carer/call/" + id, "", "width=640,height=480");
+    /*streams_window.document.head.innerHTML = '<title>Hi</title></head>';
     $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
     //$(streams_window.document.body).html("<div id='remote'></div><div id='local></div>");*/
-    var html = "<html><head><script src='https://code.jquery.com/jquery-1.10.2.js'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js'></script><script src='js/adapter.js'></script><script src='js/janus.js'></script><script src='js/videoconference.js'></script></head><body style='margin: 0;background-color: black;'><div id='remote'></div><div id='local'></div></body></html>" ;
+    /*var html = "<html><head><script src='https://code.jquery.com/jquery-1.10.2.js'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js'></script><script src='js/adapter.js'></script><script src='js/janus.js'></script><script src='js/videoconference.js'></script></head><body style='margin: 0;background-color: black;'><div id='remote'></div><div id='local'></div></body></html>" ;
 
-    streams_window.document.write(html);
+    streams_window.document.write(html);*/
 
 }
 

@@ -13,5 +13,6 @@ body {
 #remote {
     position: fixed;
     object-fit: contain;
+    max-width: 100%;
 }
 

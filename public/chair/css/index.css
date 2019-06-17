@@ -8,10 +8,14 @@
 
 #remote {
     object-fit: contain;
+    position: absolute;
 }
 
 #conference {
     position: relative;
+    height: 500px;
+    background-color: black;
+    padding: 0;
 }
 
 #local {
@@ -19,4 +23,32 @@
     bottom: 10px;
     right: 18px;
     object-fit: contain;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+#go { 
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 5;
+    grid-row-end: 5;
+}
+
+#next_page {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 5;
+    grid-row-end: 5;
+}
+
+#previous_page {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 5;
+    grid-row-end: 5;
 }

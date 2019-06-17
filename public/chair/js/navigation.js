@@ -8,6 +8,7 @@ class Navigation {
 
     this.scale_width;
     this.scale_heigth;
+    this.total_zoom = 0;
 
     this.ros = new ROSLIB.Ros({
       url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
@@ -139,15 +140,15 @@ class Navigation {
     });
 
     this.gridClient.on('change', function() {
+      this.gridClient.rootObject.addChild(this.path);
+      this._set_marker_on_map();
+      this.viewer2D.shift(this.gridClient.currentGrid.pose.position.x, this.gridClient.currentGrid.pose.position.y);
       this.scale_width = this.gridClient.currentGrid.width;
       this.scale_heigth = this.gridClient.currentGrid.height;
       this.zoom(0);
-      this.viewer2D.shift(this.gridClient.currentGrid.pose.position.x, this.gridClient.currentGrid.pose.position.y);
-
-      $("canvas").css("visibility", "visible");//QUITAR
-
-      this.gridClient.rootObject.addChild(this.path);
-      this._set_marker_on_map();
+      $(".progress").css("visibility", "hidden");
+      $("#panel").css("visibility", "visible");
+      $("canvas").css("background-color", "#7F7F7F");//QUITAR
     }.bind(this));
   }
 
@@ -185,9 +186,9 @@ class Navigation {
   }
 
   zoom(zoom){
-    this.scale_width = this.scale_width+zoom
-    this.scale_heigth = this.scale_heigth+zoom
-    this.viewer2D.scaleToDimensions(this.scale_width, this.scale_heigth);
+    //Calcular this.zoom_porcentage?
+    this.total_zoom = this.total_zoom + zoom;
+    this.viewer2D.scaleToDimensions(this.scale_width + this.total_zoom, this.scale_heigth + this.total_zoom);
   }
 
   subscribe_speed(listener_function){
@@ -223,9 +224,7 @@ class Navigation {
       }.bind(this),
       pointSize: 5
     });
+    polygon.addPoint(pos); 
     this.viewer2D.scene.addChild(polygon);
-    polygon.addPoint(pos);
   }
 }
-
-

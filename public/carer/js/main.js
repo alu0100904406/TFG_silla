@@ -91,10 +91,9 @@ var click_function = function(event){
                 data: JSON.stringify(data),
                 success: function(){
                     socket.emit('place_added', data);  
+                    map_navigation.set_place_marker(position, place_name);
                 }
             });
-
-            map_navigation.set_place_marker(position);
         }
     }
 }

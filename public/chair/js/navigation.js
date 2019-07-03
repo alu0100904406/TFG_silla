@@ -10,8 +10,10 @@ class Navigation {
     this.scale_heigth;
     this.total_zoom = 0;
 
+    var hostname = window.location.host;
+
     this.ros = new ROSLIB.Ros({
-      url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
+      url : 'wss://' + hostname + ':9090'//Conexion a rosbridge
     });
 
     this.ros.on('connection', function() {
@@ -150,6 +152,7 @@ class Navigation {
       $("#panel").css("visibility", "visible");
       $("canvas").css("background-color", "#7F7F7F");//QUITAR
     }.bind(this));
+
   }
 
   set_goal(position){

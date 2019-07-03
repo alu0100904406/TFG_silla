@@ -3,8 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var instances = M.Sidenav.init(elems, {});
 });
 
+var hostname = window.location.host;
+
 rosHeartbeat = new ROSLIB.Ros({
-    url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
+    url : 'wss://' + hostname + ':9090'//Conexion a rosbridge
 });
 
 //TERMOMETRO
@@ -175,14 +177,14 @@ function drawChart() {
 }
 
 function visualization(){
-    $.get("/list_streams", function(data, status){
+    $.get("list_streams", function(data, status){
         var streams_window = window.open("", "", "width=500,height=500");
         $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
-        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://localhost:8123/stream?topic=" + data.topics[0] + "'>");
+        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://0.0.0.0/stream?topic=" + data.topics[0] + "'>");
         var select = $('<select/>');
         select.attr('style','position: fixed;top: 10px;right: 10px;')
         select.on('change',function(){
-            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://localhost:8123/stream?topic=" + this.value);
+            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://0.0.0.0/stream?topic=" + this.value);
         })
         $(streams_window.document.body).prepend(select);
         data.topics.forEach(function(topic) {

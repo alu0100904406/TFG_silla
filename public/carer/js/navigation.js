@@ -8,10 +8,14 @@ class Navigation {
 
     this.scale_width;
     this.scale_heigth;
-    this.total_zoom = 0;
+    this.total_zoom = 1.0;
+
+    console.log(window.location);
+
+    var hostname = window.location.host;
 
     this.ros = new ROSLIB.Ros({
-      url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
+      url : 'wss://' + hostname + ':9090'//Conexion a rosbridge
     });
 
     this.ros.on('connection', function() {
@@ -28,12 +32,12 @@ class Navigation {
     });
 
     this.robotMarker = new ROS2D.NavigationArrow({
-          size : 12,
-          strokeSize : 1,
+          size : 1,
+          strokeSize : 0.1,
           fillColor : createjs.Graphics.getRGB(255, 128, 0, 1),
           pulse : true
     });
-    this.robotMarker.visible = false;
+    // this.robotMarker.visible = true;
 
     this._initialize_topics();
 
@@ -85,6 +89,7 @@ class Navigation {
 
   _set_marker_on_map(){
     this.initScaleSet = false;
+
     this.gridClient.rootObject.addChild(this.robotMarker);
     this.poseTopic.subscribe(function(message) {
 
@@ -94,11 +99,21 @@ class Navigation {
       this.robotMarker.x = this.position.position.x;
       this.robotMarker.y = -this.position.position.y;
 
-      if (!this.initScaleSet) {
-        this.robotMarker.scaleX = 1.0 / this.viewer2D.scene.scaleX;
-        this.robotMarker.scaleY = 1.0 / this.viewer2D.scene.scaleY;
+     if (!this.initScaleSet) {
+        // this.robotMarker.scaleX = this.gridClient.currentGrid.scaleX;
+        // this.robotMarker.scaleY = this.gridClient.currentGrid.scaleY;
+
+         this.viewer2D.scene.scaleX = 1;
+         this.viewer2D.scene.scaleY = 1;
+
+         this.total_zoom = this.viewer2D.scene.scaleX;
+
+         this.viewer2D.scene.x = this.position.position.x - (this.viewer2D.width / 2.0);
+         this.viewer2D.scene.y = this.position.position.y + (this.viewer2D.height / 2.0);
+
         this.initScaleSet = true;
       }
+
       this.robotMarker.rotation = this.viewer2D.scene.rosQuaternionToGlobalTheta(message.pose.pose.orientation);
       this.robotMarker.visible = true;
     }.bind(this));
@@ -141,15 +156,18 @@ class Navigation {
 
     this.gridClient.on('change', function() {
       this.gridClient.rootObject.addChild(this.path);
-      this._set_marker_on_map();
-      this.viewer2D.shift(this.gridClient.currentGrid.pose.position.x, this.gridClient.currentGrid.pose.position.y);
+
+      // this.viewer2D.shift(this.gridClient.currentGrid.pose.position.x, this.gridClient.currentGrid.pose.position.y);
       this.scale_width = this.gridClient.currentGrid.width;
       this.scale_heigth = this.gridClient.currentGrid.height;
-      this.zoom(0);
+      // this.zoom(0);
       $(".progress").css("visibility", "hidden");
       $("#panel").css("visibility", "visible");
       $("canvas").css("background-color", "#7F7F7F");//QUITAR
+
+      this._set_marker_on_map();
     }.bind(this));
+
   }
 
   set_goal(position){
@@ -187,8 +205,15 @@ class Navigation {
 
   zoom(zoom){
     //Calcular this.zoom_porcentage?
-    this.total_zoom = this.total_zoom + zoom;
-    this.viewer2D.scaleToDimensions(this.scale_width + this.total_zoom, this.scale_heigth + this.total_zoom);
+    if (zoom != 0)
+      this.total_zoom = this.total_zoom + (zoom > 0? -this.gridClient.currentGrid.scaleX * 2:this.gridClient.currentGrid.scaleX * 2);
+
+    // this.viewer2D.scaleToDimensions(this.scale_width * this.total_zoom, this.scale_heigth * this.total_zoom);
+    console.log(this);
+    this.viewer2D.scene.scaleX = this.total_zoom;
+    this.viewer2D.scene.scaleY = this.total_zoom;
+    // this.viewer2D.scaleToDimensions(this.scale_width * this.total_zoom, this.scale_heigth * this.total_zoom);
+
   }
 
   subscribe_speed(listener_function){
@@ -206,7 +231,8 @@ class Navigation {
   }
 
   shift_map(x,y){
-    this.viewer2D.shift(x,y);
+      this.viewer2D.scene.x -= x;
+      this.viewer2D.scene.y += y;
   }
 
   set_place_marker(pos,name){

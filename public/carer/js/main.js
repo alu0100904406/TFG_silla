@@ -12,6 +12,7 @@ var place_mode = false;
 var carer = false
 
 $( "#twod-map" ).on("wheel", function(event) {
+    console.log(event);
     if (map_navigation.viewer2D.scene.mouseInBounds === true) {
         event.preventDefault();
         map_navigation.zoom(event.originalEvent.deltaY);
@@ -42,8 +43,11 @@ window.onunload = function(){
 }
 
 var dbclick_function = function(event){
+    console.log("dbclick_function");
     if(map_navigation.get_scene().mouseInBounds === true && !place_mode && carer){
+        console.log("inbounds");
         event.preventDefault();
+        console.log("preventDefault");
         var position = map_navigation.get_ros_position(event.stageX, event.stageY);
         map_navigation.set_goal(position);
     }
@@ -60,11 +64,11 @@ function visualization(){
     $.get("/list_streams", function(data, status){
         var streams_window = window.open("", "", "width=500,height=500");
         $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
-        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://localhost:8123/stream?topic=" + data.topics[0] + "'>");
+        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://0.0.0.0/stream?topic=" + data.topics[0] + "'>");
         var select = $('<select/>');
         select.attr('style','position: fixed;top: 10px;right: 10px;')
         select.on('change',function(){
-            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://localhost:8123/stream?topic=" + this.value);
+            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://0.0.0.0/stream?topic=" + this.value);
         })
         $(streams_window.document.body).prepend(select);
         data.topics.forEach(function(topic) {
@@ -156,7 +160,7 @@ function call(){
         subscribir();
     });*/
     id = socket.id.split('#')[1];
-    var streams_window = window.open("https://localhost/carer/call/" + id, "", "width=640,height=480");
+    var streams_window = window.open("/carer/call/" + id, "", "width=640,height=480");
     /*streams_window.document.head.innerHTML = '<title>Hi</title></head>';
     $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
     //$(streams_window.document.body).html("<div id='remote'></div><div id='local></div>");*/

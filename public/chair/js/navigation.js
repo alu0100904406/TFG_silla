@@ -11,7 +11,7 @@ class Navigation {
     this.total_zoom = 0;
 
     this.ros = new ROSLIB.Ros({
-      url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
+      url : 'ws:' + window.location.hostname + ':9090'//Conexion a rosbridge
     });
 
     this.ros.on('connection', function() {

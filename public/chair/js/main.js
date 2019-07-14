@@ -95,6 +95,8 @@ socket.on('carer_calling',(data) => {
     socket.emit('response',{caller:data.caller});
     publicar();
     subscribir();
+    $("#twod-map").hide();
+    $("#conference").show();
 });
 
 socket.on('place_added',(place) => { 

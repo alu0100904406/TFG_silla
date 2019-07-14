@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 rosHeartbeat = new ROSLIB.Ros({
-    url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
+    url : 'ws://' + window.location.hostname + ':9090'//Conexion a rosbridge
 });
 
 //TERMOMETRO

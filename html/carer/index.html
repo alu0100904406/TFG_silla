@@ -10,8 +10,10 @@
     <script src="https://static.robotwebtools.org/EaselJS/current/easeljs.js"></script>
     <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
     <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
-    <script src="js/ros2d.js"></script>
-    <script src='https://code.jquery.com/jquery-1.10.2.js'></script>
+	<script src="js/ros2d.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src='https://code.jquery.com/jquery-1.10.2.js'></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js'></script>
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="js/navigation.js"></script>
@@ -41,13 +43,22 @@
 		<li><a href="javascript:visualization()"><i class="material-icons">video_label</i>Visualización</a></li>
 		<li><a href="javascript:call()"><i class="material-icons">video_call</i>Videoconferencia</a></li>
 	</ul>
+
+	<div id="dialog" title="Basic dialog">
+		<div class="input-field">
+			<input id="change-place-name" type="text" class="validate">
+			<label class="active" for="change-place-name">Name</label>
+		</div>
+	</div>
 	
 	<div class="progress">
 		<div class="indeterminate"></div>
 	</div>
 
 	<div id="panel" class="row">
-		<div id="twod-map" class="col l6 s12 xl6 m12"></div>
+		<div id="twod-map" class="col l6 s12 xl6 m12">
+			
+		</div>
 
 		<div id="controller" class="col l6 s12 xl6 m12">
 			<div class="">

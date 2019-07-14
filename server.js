@@ -27,12 +27,12 @@ app.get("/carer", function(req, res){
 });
 
 app.get("/carer/call/:socket_id", function(req, res){
-    //if(("/carers#" + req.params.socket_id)==carer_id){
+    if(("/carers#" + req.params.socket_id)==carer_id){
         res.sendFile(__dirname + "/html/carer/call.html");
-    //}
-    /*else{
+    }
+    else{
         res.sendStatus(403);
-    }*/
+    }
 });
 
 app.get("/chair", function(req, res){
@@ -61,6 +61,19 @@ app.get("/places", function(req, res){
                 json_places.places.push(place);
             });
             res.json(json_places);
+        }
+    });
+});
+
+app.patch("/place/:name", function(req, res){
+    console.log(req.body.new_name,req.params.name)
+    db.run("UPDATE table_name SET 'Name' =" +  req.body.new_name + "WHERE 'Name' = " + req.params.name + ";",
+    (err) => {  
+        if (err) {
+            res.sendStatus(409);//MANEJAR MEJOR ESTO
+        }
+        else {
+            res.sendStatus(201);
         }
     });
 });

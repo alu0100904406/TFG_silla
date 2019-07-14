@@ -11,7 +11,7 @@ class Navigation {
     this.total_zoom = 0;
 
     this.ros = new ROSLIB.Ros({
-      url : 'ws://127.0.0.1:9090'//Conexion a rosbridge
+      url : 'ws:' + window.location.hostname + ':9090'//Conexion a rosbridge
     });
 
     this.ros.on('connection', function() {
@@ -36,10 +36,6 @@ class Navigation {
     this.robotMarker.visible = false;
 
     this._initialize_topics();
-
-    this.path = new ROS2D.PathShape({ strokeColor: createjs.Graphics.getRGB(239, 48, 14, 0.66)});
-    this.path_state = false;
-    this.switch_path();
 
     this.goal_mode = true;
     this.place_mode = false;
@@ -140,7 +136,15 @@ class Navigation {
     });
 
     this.gridClient.on('change', function() {
-      this.gridClient.rootObject.addChild(this.path);
+      this.path = new ROS2D.PathShape({ strokeColor: createjs.Graphics.getRGB(239, 48, 14, 0.66)});
+      this.path_state = false;
+
+      this.pathTopic.subscribe(function(message) {
+        this.actual_path_message = message;
+        this.path.setPath(this.actual_path_message);
+      }.bind(this));
+      
+      this.switch_path()
       this._set_marker_on_map();
       this.viewer2D.shift(this.gridClient.currentGrid.pose.position.x, this.gridClient.currentGrid.pose.position.y);
       this.scale_width = this.gridClient.currentGrid.width;
@@ -172,16 +176,12 @@ class Navigation {
   switch_path(){
     if(this.path_state === false){
       this.path_state=true;
-      this.path.setPath(this.actual_path_message);
-      this.pathTopic.subscribe(function(message) {
-        this.actual_path_message = message;
-        this.path.setPath(this.actual_path_message);
-      }.bind(this));
+      this.gridClient.rootObject.addChild(this.path);
+      this.gridClient.rootObject.setChildIndex( this.path, this.gridClient.rootObject.getNumChildren()-2);
     }
     else {
       this.path_state=false;
-      this.path.setPath(null);
-      this.pathTopic.unsubscribe();
+      this.gridClient.rootObject.removeChild(this.path);
     }
   }
 
@@ -192,7 +192,7 @@ class Navigation {
   }
 
   subscribe_speed(listener_function){
-    this.velTopic.subscribe(listener_function)
+    this.velTopic.subscribe(listener_function);
   }
 
   stop(){
@@ -212,15 +212,41 @@ class Navigation {
   set_place_marker(pos,name){
     var polygon = new ROS2D.PolygonMarker({
       pointCallBack : function(){
-        if (confirm("¿Eliminar " + name + "?")) {
-          this.viewer2D.scene.removeChild(polygon);
-          $.ajax({
-            url: '/place',
-            type: 'DELETE',
-            contentType: 'application/json',
-            data: JSON.stringify({ name: name})
+        $('#change-place-name').attr('value', name);
+        $( "#dialog" ).dialog( "option", "title", name );
+        $('#dialog').dialog( {
+              buttons: [
+                  {
+                      text: 'OK',
+                      click: function(){
+                        if ($('#change-place-name').val() != name){
+                          $.ajax({
+                            url: '/place/' + name,
+                            type : 'PATCH',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ new_name: $('#change-place-name').val()}),
+                          })
+                        }
+                        $( this ).dialog( "close" );
+                      },
+                  },
+                  {
+                      icon: " ui-icon-trash",
+                      click: function() {
+                          this.viewer2D.scene.removeChild(polygon);
+                          $.ajax({
+                            url: '/place',
+                            type: 'DELETE',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ name: name}),
+                          });//Emitir eliminado en succes
+                          $('#dialog').dialog( "close" );
+                      }.bind(this),
+                  }
+              ]
           });
-        }
+        $('#dialog').dialog( "open" );
+        
       }.bind(this),
       pointSize: 5
     });

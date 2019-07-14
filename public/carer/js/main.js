@@ -3,6 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     var instances = M.Sidenav.init(elems, {});
   });
 
+  $( function() {
+    $( "#dialog" ).dialog({
+        appendTo: "#twod-map",
+        autoOpen: false,
+    });
+  } );
+
 var map_navigation;
 
 map_navigation = new Navigation();
@@ -60,11 +67,11 @@ function visualization(){
     $.get("/list_streams", function(data, status){
         var streams_window = window.open("", "", "width=500,height=500");
         $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
-        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://localhost:8123/stream?topic=" + data.topics[0] + "'>");
+        $(streams_window.document.body).html("<img id='visualization_stream' style='height:100%; width:100%;object-fit: contain;' src='http://" + window.location.hostname + ":8123/stream?topic=" + data.topics[0] + "'>");
         var select = $('<select/>');
         select.attr('style','position: fixed;top: 10px;right: 10px;')
         select.on('change',function(){
-            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://localhost:8123/stream?topic=" + this.value);
+            $(streams_window.document.getElementById('visualization_stream')).attr("src", "http://" + window.location.hostname + ":8123/stream?topic=" + this.value);
         })
         $(streams_window.document.body).prepend(select);
         data.topics.forEach(function(topic) {
@@ -103,7 +110,6 @@ this.map_navigation.set_click_event(click_function);
 map_navigation.subscribe_speed(function(message){
     $("#vel").text("Speed: " + message.linear.x.toFixed(2) + " m/s");
 });
-
 
 var socket = io.connect('/carers');
 
@@ -156,7 +162,7 @@ function call(){
         subscribir();
     });*/
     id = socket.id.split('#')[1];
-    var streams_window = window.open("https://localhost/carer/call/" + id, "", "width=640,height=480");
+    var streams_window = window.open("/carer/call/" + id, "", "width=640,height=480");
     /*streams_window.document.head.innerHTML = '<title>Hi</title></head>';
     $(streams_window.document.body).attr('style', 'margin: 0;background-color: black;');
     //$(streams_window.document.body).html("<div id='remote'></div><div id='local></div>");*/

@@ -64,6 +64,14 @@ function attach(){
                                 participants.length = 0;
                             }
                         }
+                        else if(msg["leaving"]!=null && msg["leaving"]!=undefined){
+                            videoroomPublisher.send({"message":{
+                                "request" : "unpublish",
+                            }});
+                            $("#twod-map").show();
+                            $("#conference").hide();
+                            publishing = false;
+                        }
                     }
                     if(jsep !== undefined && jsep !== null) {
                         videoroomPublisher.handleRemoteJsep({jsep: jsep});
@@ -85,10 +93,12 @@ function attach(){
 }
 
 function publicar(){
+    console.log("publicar")
     if(!publishing){
         videoroomPublisher.createOffer(
         {
             success: function(jsep) {
+                console.log('oferta publicar')
                 var publish = { "request": "publish", "audio": true, "video": true };
                 videoroomPublisher.send({"message": publish, "jsep": jsep});
             },
